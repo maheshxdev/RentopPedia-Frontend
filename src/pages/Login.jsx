@@ -14,13 +14,11 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Login request
-      
       await axios.post("https://rentop-pedia-backend.vercel.app/api/auth/login", form, {
         withCredentials: true,
       });
 
-      // Fetch user details
+      
       const res = await axios.get("https://rentop-pedia-backend.vercel.app/api/user/me", {
         withCredentials: true,
       });

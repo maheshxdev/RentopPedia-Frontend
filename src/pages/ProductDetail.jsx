@@ -34,18 +34,43 @@ const ProductDetail = () => {
   }, [product?.rentRequests, user?.username, optimisticPending]);
 
   // Fetch product from backend
+  // const fetchProduct = async () => {
+  //   try {
+  //     const res = await fetch(`https://rentop-pedia-backend.vercel.app/api/property/${id}`, {
+  //       credentials: "include",
+  //     });
+  //     const data = await res.json();
+  //     setProduct(data);
+  //     if (data.images && data.images.length > 0) setMainImage(data.images[0]);
+  //   } catch (err) {
+  //     console.error("Error fetching product:", err);
+  //   }
+  // };
+
   const fetchProduct = async () => {
-    try {
-      const res = await fetch(`https://rentop-pedia-backend.vercel.app/api/property/${id}`, {
-        credentials: "include",
-      });
-      const data = await res.json();
-      setProduct(data);
-      if (data.images && data.images.length > 0) setMainImage(data.images[0]);
-    } catch (err) {
-      console.error("Error fetching product:", err);
+  try {
+    setLoading(true);
+    const res = await fetch(`https://rentop-pedia-backend.vercel.app/api/property/${id}`, {
+      credentials: "include",
+    });
+
+    if (!res.ok) {
+      console.error("Failed to fetch product:", res.status, res.statusText);
+      setProduct(null);
+      return;
     }
-  };
+
+    const data = await res.json();
+    setProduct(data);
+    if (Array.isArray(data.images) && data.images.length > 0) setMainImage(data.images[0]);
+  } catch (err) {
+    console.error("Error fetching product:", err);
+    setProduct(null);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     fetchProduct();
@@ -143,7 +168,6 @@ const ProductDetail = () => {
     }
   };
 
-  // Owner: Accept/Reject rent request
   const handleRequestUpdate = async (requestId, status) => {
     try {
       const res = await fetch(

@@ -22,18 +22,44 @@ const Home = () => {
   const [load,setLoading]=useState(false);
   
 
- const fetchProducts = async () => {
+//  const fetchProducts = async () => {
+//   try {
+//     setLoading(true);
+//     const res = await fetch("https://rentop-pedia-backend.vercel.app/api/property/all");
+//     const data = await res.json();
+//     setProducts(data);
+//   } catch (err) {
+//     console.error("Failed to load products", err);
+//   } finally {
+//     setLoading(false);
+//   }
+// };
+
+
+
+const fetchProducts = async () => {
   try {
     setLoading(true);
     const res = await fetch("https://rentop-pedia-backend.vercel.app/api/property/all");
     const data = await res.json();
+    
+    if (!Array.isArray(data)) {
+      console.error("Products API did not return an array:", data);
+      setProducts([products]);
+      return;
+    }
+    
     setProducts(data);
   } catch (err) {
     console.error("Failed to load products", err);
+    setProducts([products]); 
   } finally {
     setLoading(false);
   }
 };
+
+
+
 
 useEffect(() => {
   fetchProducts();
