@@ -37,14 +37,6 @@ const Home = () => {
 
 useEffect(() => {
   fetchProducts();
-
-  const intervalId = setInterval(() => {
-    if (!document.hidden) {
-      fetchProducts();
-    }
-  }, 30000);
-
-  return () => clearInterval(intervalId);
 }, []);
 
 
