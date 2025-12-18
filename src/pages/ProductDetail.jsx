@@ -105,14 +105,6 @@ const ProductDetail = () => {
       setOptimisticPending(true);
       fetchProduct();
 
-      // // Notify owner via socket
-      // window.socket?.emit("rent-request-sent", {
-      //   ownerUsername: product.ownerUserID,
-      //   requester: user.username,
-      //   productId: id,
-      //   days: rentDays,
-      //   totalAmount: totalRent,
-      // });
     } catch (err) {
       console.error(err);
       toast.error(err.message || "Failed to send request");
