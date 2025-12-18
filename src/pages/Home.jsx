@@ -43,16 +43,16 @@ const fetchProducts = async () => {
     const res = await fetch("https://rentop-pedia-backend.vercel.app/api/property/all");
     const data = await res.json();
     
-    if (!Array.isArray(data)) {
-      console.error("Products API did not return an array:", data);
-      setProducts(products);
-      return;
-    }
+    // if (!Array.isArray(data)) {
+    //   console.error("Products API did not return an array:", data);
+    //   setProducts([]);
+    //   return;
+    // }
     
     setProducts(data);
   } catch (err) {
     console.error("Failed to load products", err);
-    setProducts(products); 
+    setProducts([]); // fallback to empty array
   } finally {
     setLoading(false);
   }
