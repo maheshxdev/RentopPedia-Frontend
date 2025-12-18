@@ -57,9 +57,9 @@ useEffect(() => {
         );
 
   if(load) { 
-    return <svg className="loader" viewBox="25 25 50 50">
-  <circle r="20" cy="50" cx="50"></circle>
-</svg>
+    return  <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+    </div>
   };
 
   return (
