@@ -84,7 +84,7 @@ const UserProfile = () => {
 
       {products.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {products.map((product) => (
+          {products?.map((product) => (
             <ProductCard
               product={{
                 id: product._id,

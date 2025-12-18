@@ -127,7 +127,7 @@ const Dashboard = () => {
           <p className="text-gray-500">No properties uploaded yet.</p>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {userProperties.map((property) => (
+            {userProperties?.map((property) => (
               <div
                 key={property._id}
                 className="bg-white border border-gray-200 rounded-2xl shadow-md overflow-hidden transform transition duration-300 hover:shadow-xl hover:-translate-y-2 hover:scale-105"
@@ -181,7 +181,7 @@ const Dashboard = () => {
           <p className="text-gray-500">No requests sent yet.</p>
         ) : (
           <div className="space-y-3">
-            {sentRequests.map((req) => (
+            {sentRequests?.map((req) => (
               <div
                 key={req.requestId}
                 className="flex justify-between items-center p-4 border rounded"
@@ -244,7 +244,7 @@ const Dashboard = () => {
           <p className="text-gray-500">No incoming requests.</p>
         ) : (
           <div className="space-y-3">
-            {receivedRequests.map((req) => (
+            {receivedRequests?.map((req) => (
               <div
                 key={req.requestId}
                 className="flex justify-between items-center p-4 border rounded"

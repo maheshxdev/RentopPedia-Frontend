@@ -316,7 +316,7 @@ const ProductDetail = () => {
             </button>
           </div>
           {product.rentRequests?.length > 0 ? (
-            product.rentRequests.map((r) => (
+            product.rentRequests?.map((r) => (
               <div
                 key={r._id}
                 className="flex justify-between items-center p-4 border rounded mb-2"
@@ -354,7 +354,7 @@ const ProductDetail = () => {
         <h2 className="text-xl font-semibold mb-4">Reviews</h2>
         {product.reviews?.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {product.reviews.map((rev, idx) => (
+            {product.reviews?.map((rev, idx) => (
               <div
                 key={idx}
                 className="p-5 rounded-2xl shadow-md bg-white/80 backdrop-blur-lg border border-gray-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
@@ -368,7 +368,7 @@ const ProductDetail = () => {
                       {rev.username}
                     </p>
                     <div className="flex items-center gap-1">
-                      {[...Array(rev.rating)].map((_, i) => (
+                      {[...Array(rev.rating)]?.map((_, i) => (
                         <Star
                           key={i}
                           size={14}
@@ -399,7 +399,7 @@ const ProductDetail = () => {
             ✨ Share Your Experience
           </h3>
           <div className="flex gap-2 mb-6">
-            {[1, 2, 3, 4, 5].map((r) => (
+            {[1, 2, 3, 4, 5]?.map((r) => (
               <button
                 type="button"
                 key={r}
