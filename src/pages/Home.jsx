@@ -45,14 +45,14 @@ const fetchProducts = async () => {
     
     if (!Array.isArray(data)) {
       console.error("Products API did not return an array:", data);
-      setProducts([products]);
+      setProducts(products);
       return;
     }
     
     setProducts(data);
   } catch (err) {
     console.error("Failed to load products", err);
-    setProducts([products]); 
+    setProducts(products); 
   } finally {
     setLoading(false);
   }
