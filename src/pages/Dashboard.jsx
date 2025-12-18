@@ -20,8 +20,14 @@ const Dashboard = () => {
       setUserProperties(userPropsRes.data);
 
       const [sentRes, recvRes] = await Promise.all([
-        axios.get(`rentop-pedia-backend.vercel.app/api/property/rent-requests/sent`, { withCredentials: true }),
-        axios.get(`rentop-pedia-backend.vercel.app/api/property/rent-requests/received`, { withCredentials: true }),
+        axios.get(
+          `rentop-pedia-backend.vercel.app/api/property/rent-requests/sent`,
+          { withCredentials: true }
+        ),
+        axios.get(
+          `rentop-pedia-backend.vercel.app/api/property/rent-requests/received`,
+          { withCredentials: true }
+        ),
       ]);
       setSentRequests(sentRes.data);
       setReceivedRequests(recvRes.data);
@@ -36,46 +42,43 @@ const Dashboard = () => {
     if (user?.username) {
       fetchAll();
     }
-
   }, [user?.username]);
 
-  // Realtime updates via socket: refresh lists and show toasts
   useEffect(() => {
-    const onRentRequest = (payload) => {
-      // owner notification when new request arrives
-      if (payload?.ownerUsername === user?.username) {
-        toast.info(`New rent request from ${payload.requester}`);
-        // refresh received list
-        axios
-          .get(`rentop-pedia-backend.vercel.app/api/property/rent-requests/received`, { withCredentials: true })
-          .then((res) => setReceivedRequests(res.data))
-          .catch(() => {});
-      }
-    };
-    const onRentRequestUpdated = (payload) => {
-      // requester notification when owner accepts/rejects/cancels
-      if (payload?.requester === user?.username) {
-        toast.info(`Your request was ${payload.status}`);
-        // refresh sent list
-        axios
-          .get(`rentop-pedia-backend.vercel.app/api/property/rent-requests/sent`, { withCredentials: true })
-          .then((res) => setSentRequests(res.data))
-          .catch(() => {});
-      } else if (user?.username) {
-        // owner-side updates as well
-        axios
-          .get(`rentop-pedia-backend.vercel.app/api/property/rent-requests/received`, { withCredentials: true })
-          .then((res) => setReceivedRequests(res.data))
-          .catch(() => {});
-      }
-    };
-    window.socket?.on("rent-request", onRentRequest);
-    window.socket?.on("rent-request-updated", onRentRequestUpdated);
-    return () => {
-      window.socket?.off("rent-request", onRentRequest);
-      window.socket?.off("rent-request-updated", onRentRequestUpdated);
-    };
-  }, [user?.username]);
+  if (!user?.username) return;
+
+  let intervalId = null;
+
+  const startPolling = () => {
+    if (!intervalId) {
+      intervalId = setInterval(fetchAll, 10000); // 10 sec
+    }
+  };
+
+  const stopPolling = () => {
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+  };
+
+  const handleVisibilityChange = () => {
+    if (document.hidden) stopPolling();
+    else startPolling();
+  };
+
+  startPolling(); // start when page loads
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+
+  return () => {
+    stopPolling();
+    document.removeEventListener(
+      "visibilitychange",
+      handleVisibilityChange
+    );
+  };
+}, [user?.username]);
+
   if (!user) {
     return (
       <div className="p-8 text-red-500">
@@ -171,20 +174,29 @@ const Dashboard = () => {
 
       {/* Sent Requests */}
       <div className="bg-white rounded-lg shadow p-6 mt-6">
-        <h3 className="text-xl font-semibold text-gray-700 mb-4">📤 Your Sent Requests</h3>
+        <h3 className="text-xl font-semibold text-gray-700 mb-4">
+          📤 Your Sent Requests
+        </h3>
         {sentRequests.length === 0 ? (
           <p className="text-gray-500">No requests sent yet.</p>
         ) : (
           <div className="space-y-3">
             {sentRequests.map((req) => (
-              <div key={req.requestId} className="flex justify-between items-center p-4 border rounded">
+              <div
+                key={req.requestId}
+                className="flex justify-between items-center p-4 border rounded"
+              >
                 <div>
                   <p className="font-medium">{req.propertyTitle}</p>
-                  <p className="text-sm text-gray-600">Owner: {req.ownerUsername}</p>
-                  <p className="text-sm">{req.days} days — ₹{req.totalAmount}</p>
+                  <p className="text-sm text-gray-600">
+                    Owner: {req.ownerUsername}
+                  </p>
+                  <p className="text-sm">
+                    {req.days} days — ₹{req.totalAmount}
+                  </p>
                   <p className="text-sm">Status: {req.status}</p>
                 </div>
-                {req.status === 'pending' && (
+                {req.status === "pending" && (
                   <button
                     onClick={async () => {
                       try {
@@ -195,13 +207,21 @@ const Dashboard = () => {
                         );
                         // refresh lists
                         const [sentUpdate, recvUpdate] = await Promise.all([
-                          axios.get(`rentop-pedia-backend.vercel.app/api/property/rent-requests/sent`, { withCredentials: true }),
-                          axios.get(`rentop-pedia-backend.vercel.app/api/property/rent-requests/received`, { withCredentials: true }),
+                          axios.get(
+                            `rentop-pedia-backend.vercel.app/api/property/rent-requests/sent`,
+                            { withCredentials: true }
+                          ),
+                          axios.get(
+                            `rentop-pedia-backend.vercel.app/api/property/rent-requests/received`,
+                            { withCredentials: true }
+                          ),
                         ]);
                         setSentRequests(sentUpdate.data);
                         setReceivedRequests(recvUpdate.data);
                       } catch (e) {
-                        toast.error(e?.response?.data?.message || 'Failed to cancel');
+                        toast.error(
+                          e?.response?.data?.message || "Failed to cancel"
+                        );
                       }
                     }}
                     className="bg-red-600 text-white px-3 py-1 rounded"
@@ -217,20 +237,29 @@ const Dashboard = () => {
 
       {/* Received Requests */}
       <div className="bg-white rounded-lg shadow p-6 mt-6">
-        <h3 className="text-xl font-semibold text-gray-700 mb-4">📥 Requests for Your Properties</h3>
+        <h3 className="text-xl font-semibold text-gray-700 mb-4">
+          📥 Requests for Your Properties
+        </h3>
         {receivedRequests.length === 0 ? (
           <p className="text-gray-500">No incoming requests.</p>
         ) : (
           <div className="space-y-3">
             {receivedRequests.map((req) => (
-              <div key={req.requestId} className="flex justify-between items-center p-4 border rounded">
+              <div
+                key={req.requestId}
+                className="flex justify-between items-center p-4 border rounded"
+              >
                 <div>
                   <p className="font-medium">{req.propertyTitle}</p>
-                  <p className="text-sm text-gray-600">Requester: {req.requester}</p>
-                  <p className="text-sm">{req.days} days — ₹{req.totalAmount}</p>
+                  <p className="text-sm text-gray-600">
+                    Requester: {req.requester}
+                  </p>
+                  <p className="text-sm">
+                    {req.days} days — ₹{req.totalAmount}
+                  </p>
                   <p className="text-sm">Status: {req.status}</p>
                 </div>
-                {req.status === 'pending' && (
+                {req.status === "pending" && (
                   <div className="flex gap-2">
                     <button
                       onClick={async () => {
@@ -240,10 +269,15 @@ const Dashboard = () => {
                             {},
                             { withCredentials: true }
                           );
-                          const recvUpdate = await axios.get(`rentop-pedia-backend.vercel.app/api/property/rent-requests/received`, { withCredentials: true });
+                          const recvUpdate = await axios.get(
+                            `rentop-pedia-backend.vercel.app/api/property/rent-requests/received`,
+                            { withCredentials: true }
+                          );
                           setReceivedRequests(recvUpdate.data);
                         } catch (e) {
-                          toast.error(e?.response?.data?.message || 'Failed to accept');
+                          toast.error(
+                            e?.response?.data?.message || "Failed to accept"
+                          );
                         }
                       }}
                       className="bg-green-600 text-white px-3 py-1 rounded"
@@ -258,10 +292,15 @@ const Dashboard = () => {
                             {},
                             { withCredentials: true }
                           );
-                          const recvUpdate = await axios.get(`rentop-pedia-backend.vercel.app/api/property/rent-requests/received`, { withCredentials: true });
+                          const recvUpdate = await axios.get(
+                            `rentop-pedia-backend.vercel.app/api/property/rent-requests/received`,
+                            { withCredentials: true }
+                          );
                           setReceivedRequests(recvUpdate.data);
                         } catch (e) {
-                          toast.error(e?.response?.data?.message || 'Failed to reject');
+                          toast.error(
+                            e?.response?.data?.message || "Failed to reject"
+                          );
                         }
                       }}
                       className="bg-red-600 text-white px-3 py-1 rounded"

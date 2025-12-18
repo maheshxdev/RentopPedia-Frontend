@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import { useUser } from "../context/UserData";
-import io from "socket.io-client";
 import SearchBar from "../components/SearchBar";
 import { motion } from "framer-motion";
 import {
@@ -13,8 +12,7 @@ import {
   Briefcase,
 } from "lucide-react";
 
-// Initialize Socket.IO
-const socket = io("rentop-pedia-backend.vercel.app");
+
 
 const Home = () => {
   const { user } = useUser();
@@ -24,27 +22,31 @@ const Home = () => {
   const [load,setLoading]=useState(false);
   
 
-  // Fetch initial data
-  useEffect(() => {
-    console.log();
+ const fetchProducts = async () => {
+  try {
     setLoading(true);
-    fetch("rentop-pedia-backend.vercel.app/api/property/all")
-      .then((res) => res.json())
-      .then((data) => {
-        setLoading(false)
-        setProducts(data)})
-      .catch((err) =>{ console.error("Failed to load products", err)
-        setLoading(false)
-      });
-  }, []);
+    const res = await fetch("rentop-pedia-backend.vercel.app/api/property/all");
+    const data = await res.json();
+    setProducts(data);
+  } catch (err) {
+    console.error("Failed to load products", err);
+  } finally {
+    setLoading(false);
+  }
+};
 
-  // Real-time new product listener
-  useEffect(() => {
-    socket.on("new-property", (newProduct) => {
-      setProducts((prev) => [newProduct, ...prev]);
-    });
-    return () => socket.off("new-property");
-  }, []);
+useEffect(() => {
+  fetchProducts();
+
+  const intervalId = setInterval(() => {
+    if (!document.hidden) {
+      fetchProducts();
+    }
+  }, 30000);
+
+  return () => clearInterval(intervalId);
+}, []);
+
 
   // Filtered products
   const filteredProducts =

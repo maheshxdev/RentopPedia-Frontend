@@ -21,21 +21,6 @@ const username=createContext("")
 
 function App() {
   const {user}=useUser()
-  useEffect(() => {
-    if (!user) return;
-
-    // Listen to rent requests
-    window.socket.on("rent-request", (data) => {
-      if (data.ownerUsername === user.username) {
-        alert(`New rent request from ${data.requester} for ${data.days} days (₹${data.totalAmount})`);
-      }
-    });
-
-    // Cleanup on unmount
-    return () => {
-      window.socket.off("rent-request");
-    };
-  }, [user]);
   return (
     <BrowserRouter>
       <ScrollToTop />

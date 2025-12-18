@@ -50,23 +50,35 @@ const ProductDetail = () => {
   useEffect(() => {
     fetchProduct();
   }, [id]);
-
-  // Realtime: owner sees incoming requests on the product page
   useEffect(() => {
-    const onRentRequest = (payload) => {
-      if (
-        payload?.productId === id &&
-        payload?.ownerUsername === user?.username
-      ) {
-        toast.info(`New rent request from ${payload.requester}`);
-        fetchProduct();
-      }
-    };
-    window.socket?.on("rent-request", onRentRequest);
-    return () => {
-      window.socket?.off("rent-request", onRentRequest);
-    };
-  }, [id, user?.username]);
+  if (!id) return;
+
+  let intervalId;
+
+  const start = () => {
+    intervalId = setInterval(fetchProduct, 5000); // 5 sec
+  };
+
+  const stop = () => {
+    if (intervalId) clearInterval(intervalId);
+  };
+
+  const handleVisibility = () => {
+    if (document.hidden) stop();
+    else start();
+  };
+
+  document.addEventListener("visibilitychange", handleVisibility);
+  start();
+
+  return () => {
+    stop();
+    document.removeEventListener("visibilitychange", handleVisibility);
+  };
+}, [id]);
+
+
+  
 
   // Total rent calculation
   const totalRent = rentDays * product?.price + product?.deposit;
@@ -93,14 +105,14 @@ const ProductDetail = () => {
       setOptimisticPending(true);
       fetchProduct();
 
-      // Notify owner via socket
-      window.socket?.emit("rent-request-sent", {
-        ownerUsername: product.ownerUserID,
-        requester: user.username,
-        productId: id,
-        days: rentDays,
-        totalAmount: totalRent,
-      });
+      // // Notify owner via socket
+      // window.socket?.emit("rent-request-sent", {
+      //   ownerUsername: product.ownerUserID,
+      //   requester: user.username,
+      //   productId: id,
+      //   days: rentDays,
+      //   totalAmount: totalRent,
+      // });
     } catch (err) {
       console.error(err);
       toast.error(err.message || "Failed to send request");
@@ -179,19 +191,7 @@ const ProductDetail = () => {
     }
   };
 
-  // realtime: notify requester when their request is updated
-  useEffect(() => {
-    const onUpdated = (payload) => {
-      if (payload?.productId === id && payload?.requester === user?.username) {
-        toast.info(`Your request was ${payload.status}`);
-        fetchProduct();
-      }
-    };
-    window.socket?.on("rent-request-updated", onUpdated);
-    return () => {
-      window.socket?.off("rent-request-updated", onUpdated);
-    };
-  }, [id, user?.username]);
+  
 
   if (!product) return <div className="text-center py-10">Loading...</div>;
 
