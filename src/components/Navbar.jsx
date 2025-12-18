@@ -12,7 +12,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post("rentop-pedia-backend.vercel.app/api/auth/logout", {}, { withCredentials: true });
+      await axios.post("https://rentop-pedia-backend.vercel.app/api/auth/logout", {}, { withCredentials: true });
     } catch (err) {
       console.error("Logout failed:", err);
     }

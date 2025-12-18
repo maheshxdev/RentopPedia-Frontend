@@ -25,7 +25,7 @@ const Home = () => {
  const fetchProducts = async () => {
   try {
     setLoading(true);
-    const res = await fetch("rentop-pedia-backend.vercel.app/api/property/all");
+    const res = await fetch("https://rentop-pedia-backend.vercel.app/api/property/all");
     const data = await res.json();
     setProducts(data);
   } catch (err) {

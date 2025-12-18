@@ -14,18 +14,18 @@ const Dashboard = () => {
   const fetchAll = async () => {
     try {
       const userPropsRes = await axios.get(
-        `rentop-pedia-backend.vercel.app/api/property/owner/${user.username}`,
+        `https://rentop-pedia-backend.vercel.app/api/property/owner/${user.username}`,
         { withCredentials: true }
       );
       setUserProperties(userPropsRes.data);
 
       const [sentRes, recvRes] = await Promise.all([
         axios.get(
-          `rentop-pedia-backend.vercel.app/api/property/rent-requests/sent`,
+          `https://rentop-pedia-backend.vercel.app/api/property/rent-requests/sent`,
           { withCredentials: true }
         ),
         axios.get(
-          `rentop-pedia-backend.vercel.app/api/property/rent-requests/received`,
+          `https://rentop-pedia-backend.vercel.app/api/property/rent-requests/received`,
           { withCredentials: true }
         ),
       ]);
@@ -201,18 +201,18 @@ const Dashboard = () => {
                     onClick={async () => {
                       try {
                         await axios.post(
-                          `rentop-pedia-backend.vercel.app/api/property/${req.propertyId}/rent-request/${req.requestId}/cancel`,
+                          `https://rentop-pedia-backend.vercel.app/api/property/${req.propertyId}/rent-request/${req.requestId}/cancel`,
                           {},
                           { withCredentials: true }
                         );
                         // refresh lists
                         const [sentUpdate, recvUpdate] = await Promise.all([
                           axios.get(
-                            `rentop-pedia-backend.vercel.app/api/property/rent-requests/sent`,
+                            `https://rentop-pedia-backend.vercel.app/api/property/rent-requests/sent`,
                             { withCredentials: true }
                           ),
                           axios.get(
-                            `rentop-pedia-backend.vercel.app/api/property/rent-requests/received`,
+                            `https://rentop-pedia-backend.vercel.app/api/property/rent-requests/received`,
                             { withCredentials: true }
                           ),
                         ]);
@@ -265,12 +265,12 @@ const Dashboard = () => {
                       onClick={async () => {
                         try {
                           await axios.post(
-                            `rentop-pedia-backend.vercel.app/api/property/${req.propertyId}/rent-request/${req.requestId}/accept`,
+                            `https://rentop-pedia-backend.vercel.app/api/property/${req.propertyId}/rent-request/${req.requestId}/accept`,
                             {},
                             { withCredentials: true }
                           );
                           const recvUpdate = await axios.get(
-                            `rentop-pedia-backend.vercel.app/api/property/rent-requests/received`,
+                            `https://rentop-pedia-backend.vercel.app/api/property/rent-requests/received`,
                             { withCredentials: true }
                           );
                           setReceivedRequests(recvUpdate.data);
@@ -288,12 +288,12 @@ const Dashboard = () => {
                       onClick={async () => {
                         try {
                           await axios.post(
-                            `rentop-pedia-backend.vercel.app/api/property/${req.propertyId}/rent-request/${req.requestId}/reject`,
+                            `https://rentop-pedia-backend.vercel.app/api/property/${req.propertyId}/rent-request/${req.requestId}/reject`,
                             {},
                             { withCredentials: true }
                           );
                           const recvUpdate = await axios.get(
-                            `rentop-pedia-backend.vercel.app/api/property/rent-requests/received`,
+                            `https://rentop-pedia-backend.vercel.app/api/property/rent-requests/received`,
                             { withCredentials: true }
                           );
                           setReceivedRequests(recvUpdate.data);

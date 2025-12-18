@@ -13,7 +13,7 @@ const UserProfile = () => {
     const fetchProfile = async () => {
       try {
         const res = await axios.get(
-          `rentop-pedia-backend.vercel.app/api/user/${username}`,
+          `https://rentop-pedia-backend.vercel.app/api/user/${username}`,
           {
             withCredentials: true, // ✅ boolean, not string
           }

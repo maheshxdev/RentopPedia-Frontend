@@ -18,7 +18,7 @@ const Register = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "rentop-pedia-backend.vercel.app/api/auth/register",
+        "https://rentop-pedia-backend.vercel.app/api/auth/register",
         form,
         { withCredentials: true }
       );

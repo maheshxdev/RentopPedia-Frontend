@@ -36,7 +36,7 @@ const ProductDetail = () => {
   // Fetch product from backend
   const fetchProduct = async () => {
     try {
-      const res = await fetch(`rentop-pedia-backend.vercel.app/api/property/${id}`, {
+      const res = await fetch(`https://rentop-pedia-backend.vercel.app/api/property/${id}`, {
         credentials: "include",
       });
       const data = await res.json();
@@ -89,7 +89,7 @@ const ProductDetail = () => {
     try {
       setRequestLoading(true);
       const res = await fetch(
-        `rentop-pedia-backend.vercel.app/api/property/${id}/rent-request`,
+        `https://rentop-pedia-backend.vercel.app/api/property/${id}/rent-request`,
         {
           method: "POST",
           credentials: "include",
@@ -120,7 +120,7 @@ const ProductDetail = () => {
     try {
       setLoading(true);
       const res = await fetch(
-        `rentop-pedia-backend.vercel.app/api/property/${id}/review`,
+        `https://rentop-pedia-backend.vercel.app/api/property/${id}/review`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -147,7 +147,7 @@ const ProductDetail = () => {
   const handleRequestUpdate = async (requestId, status) => {
     try {
       const res = await fetch(
-        `rentop-pedia-backend.vercel.app/api/property/${id}/rent-request/${requestId}`,
+        `https://rentop-pedia-backend.vercel.app/api/property/${id}/rent-request/${requestId}`,
         {
           method: "PATCH",
           credentials: "include",
@@ -166,7 +166,7 @@ const ProductDetail = () => {
   const handleRequestAction = async (reqId, action) => {
     try {
       const res = await fetch(
-        `rentop-pedia-backend.vercel.app/api/property/${id}/rent-request/${reqId}/${action}`,
+        `https://rentop-pedia-backend.vercel.app/api/property/${id}/rent-request/${reqId}/${action}`,
         {
           method: "POST",
           credentials: "include",

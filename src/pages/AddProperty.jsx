@@ -46,7 +46,7 @@ const AddProperty = () => {
     }
 
     const res = await axios.post(
-      "rentop-pedia-backend.vercel.app/api/property/add",
+      "https://rentop-pedia-backend.vercel.app/api/property/add",
       formData,
       {
         withCredentials: true,

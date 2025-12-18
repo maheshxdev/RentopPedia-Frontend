@@ -41,7 +41,7 @@ const Settings = () => {
 
     try {
       const res = await axios.put(
-        "rentop-pedia-backend.vercel.app/api/user/upload-profile",
+        "https://rentop-pedia-backend.vercel.app/api/user/upload-profile",
         formData,
         {
           withCredentials: true,
@@ -60,7 +60,7 @@ const Settings = () => {
   const updatePassword = async () => {
     try {
       const res = await axios.put(
-        "rentop-pedia-backend.vercel.app/api/user/change-password",
+        "https://rentop-pedia-backend.vercel.app/api/user/change-password",
         { oldPassword, newPassword, confirmPassword },
         { withCredentials: true }
       );
@@ -90,7 +90,7 @@ const Settings = () => {
 
   const handleDeleteAccount = async () => {
     try {
-      await axios.delete("rentop-pedia-backend.vercel.app/api/user/delete", {
+      await axios.delete("https://rentop-pedia-backend.vercel.app/api/user/delete", {
         withCredentials: true,
       });
       toast.success("Account deleted!");
@@ -106,7 +106,7 @@ const Settings = () => {
   const logout = async () => {
     try {
       await axios.post(
-        "rentop-pedia-backend.vercel.app/api/auth/logout",
+        "https://rentop-pedia-backend.vercel.app/api/auth/logout",
         {},
         { withCredentials: true }
       );

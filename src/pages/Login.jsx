@@ -16,12 +16,12 @@ const Login = () => {
     try {
       // Login request
       
-      await axios.post("rentop-pedia-backend.vercel.app/api/auth/login", form, {
+      await axios.post("https://rentop-pedia-backend.vercel.app/api/auth/login", form, {
         withCredentials: true,
       });
 
       // Fetch user details
-      const res = await axios.get("rentop-pedia-backend.vercel.app/api/user/me", {
+      const res = await axios.get("https://rentop-pedia-backend.vercel.app/api/user/me", {
         withCredentials: true,
       });
       setUser(res.data);
